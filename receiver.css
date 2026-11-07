@@ -40,7 +40,6 @@ body.hud-on #hud { opacity: 1; transform: none; }
   background: #fff; }
 #hud .times { display: flex; justify-content: space-between; margin-top: 1.6vh; font-size: 2.3vh; color: var(--muted);
   font-variant-numeric: tabular-nums; }
-#hud .times #ends { color: rgba(255,255,255,.45); }
 body.live #hud .bar, body.live #hud .times { display: none; }
 
 /* ---------- centre flash + spinner ---------- */
@@ -58,20 +57,22 @@ body.buffering #spinner { opacity: 1; }
 #spinner .label { margin-top: 2vh; font-size: 2.4vh; color: var(--muted); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ---------- idle ---------- */
-#idle { position: absolute; inset: 0; z-index: 20;
-  background: var(--bg);
-  display: flex; flex-direction: column; justify-content: center; padding-left: 9vw; transition: opacity .6s ease; }
+/* ---------- idle: dim, slow-drifting light, centred mark ---------- */
+#idle { position: absolute; inset: 0; z-index: 20; background: #000; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; transition: opacity .8s ease; }
 #idle.hidden { opacity: 0; pointer-events: none; }
-#idle .glow { display: none; }
-@keyframes breathe { 0%,100% { transform: scale(1); opacity: .7 } 50% { transform: scale(1.15); opacity: 1 } }
-#idle .brand { display: flex; align-items: center; gap: 2.2vh; }
-#idle .logo { width: 9vh; height: 9vh; border-radius: 50%; display: grid; place-items: center;
-  background: #fff; }
-#idle .logo svg { width: 5vh; height: 5vh; }
-#idle .name { font-size: 7vh; font-weight: 700; letter-spacing: -.03em; }
-#idle .clock { font-size: 16vh; font-weight: 300; margin-top: 6vh; letter-spacing: -.03em; }
-#idle .hint { color: var(--muted); font-size: 3.2vh; margin-top: 1vh; }
+#idle .aura { position: absolute; width: 90vh; height: 90vh; border-radius: 50%; filter: blur(12vh); opacity: .16; }
+#idle .a1 { background: radial-gradient(circle, #5a6b8c, transparent 65%); left: -20vh; top: -30vh; animation: drift1 38s ease-in-out infinite alternate; }
+#idle .a2 { background: radial-gradient(circle, #6b5a7a, transparent 65%); right: -25vh; bottom: -35vh; animation: drift2 46s ease-in-out infinite alternate; }
+@keyframes drift1 { to { transform: translate(40vw, 25vh) scale(1.2); } }
+@keyframes drift2 { to { transform: translate(-35vw, -20vh) scale(.9); } }
+#idle .center { position: relative; text-align: center; animation: fadein 1.2s ease both; }
+@keyframes fadein { from { opacity: 0; transform: translateY(1vh); } }
+#idle .brand { display: inline-flex; align-items: center; gap: 1.8vh; opacity: .85; }
+#idle .logo { width: 6vh; height: 6vh; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.9); }
+#idle .logo svg { width: 3.4vh; height: 3.4vh; }
+#idle .name { font-size: 5vh; font-weight: 600; letter-spacing: -.02em; color: rgba(255,255,255,.88); }
+#idle .hint { color: rgba(255,255,255,.38); font-size: 2.3vh; margin-top: 2.2vh; letter-spacing: .01em; }
 
 #toast { position: absolute; z-index: 30; left: 50%; top: 6vh; transform: translate(-50%, -20px);
   background: rgba(22,24,30,.92); border: 1px solid rgba(255,255,255,.12);

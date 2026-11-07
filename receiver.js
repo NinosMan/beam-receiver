@@ -17,8 +17,6 @@ const ICONS = {
 };
 
 // ---------------------------------------------------------------- idle screen
-function tick() { $('clock').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
-tick(); setInterval(tick, 10000);
 const showIdle = (hint) => { if (hint) $('hint').textContent = hint; $('idle').classList.remove('hidden'); hud(false); };
 const hideIdle = () => $('idle').classList.add('hidden');
 
@@ -88,8 +86,6 @@ function updateBar() {
     $('buffered').style.width = (100 * Math.min((buf + offset) / dur, 1)) + '%';
     $('pos').textContent = fmt(pos);
     $('dur').textContent = fmt(dur);
-    const ends = new Date(Date.now() + (dur - pos) * 1000);
-    $('ends').textContent = 'Ends at ' + ends.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 }
 setInterval(() => { if (body.classList.contains('hud-on')) updateBar(); }, 250);
@@ -132,7 +128,6 @@ async function setSub(s) {
     const r = await fetch(s.url, { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     sub.cues = parseVtt(await r.text()); sub.url = s.url;
-    toast('Subtitles: ' + (s.label || 'on'));
   } catch (e) { sub.cues = []; sub.url = null; report('Subtitle fetch failed: ' + e.message); }
 }
 function renderSubs(force) {
@@ -150,7 +145,7 @@ function renderSubs(force) {
 context.addCustomMessageListener(NS, (event) => {
   const d = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
   if (d.type === 'sub') setSub(d.sub);
-  else if (d.type === 'offset') { sub.offset = d.ms || 0; toast(`Subtitle timing ${(sub.offset / 1000).toFixed(1)}s`); }
+  else if (d.type === 'offset') { sub.offset = d.ms || 0; }
   else if (d.type === 'style') { style = d.style || style; applyStyle(); }
 });
 
