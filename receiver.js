@@ -211,7 +211,8 @@ context.start({
   customNamespaces: { [NS]: cast.framework.system.MessageType.JSON },
   playbackConfig,
   supportedCommands: cast.framework.messages.Command.ALL_BASIC_MEDIA,
-  useShakaForHls: params.get('shaka') === '1',
+  // Shaka handles fMP4/muxed HLS (and TS via its transmuxer); ?mpl=1 falls back to the legacy player.
+  useShakaForHls: params.get('mpl') !== '1',
   maxInactivity: 3600,
   disableIdleTimeout: false,
 });
