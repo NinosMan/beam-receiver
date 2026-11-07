@@ -142,9 +142,47 @@ function renderSubs(force) {
 (function loop() { renderSubs(false); requestAnimationFrame(loop); })();
 
 // ---------------------------------------------------------------- phone messages
+// ---------------------------------------------------------------- remote: action button + keys
+let action = null;   // { kind: 'intro'|'recap'|'next', label, count }
+function showAction(a) {
+  action = a && a.kind ? a : null;
+  const el = $('action');
+  if (!action) { el.classList.remove('show'); return; }
+  $('actionLabel').textContent = action.label;
+  $('actionCount').textContent = action.count != null ? String(action.count) : '';
+  el.classList.add('show');
+}
+function sendPhone(msg) { try { context.sendCustomMessage(NS, undefined, msg); } catch (e) {} }
+function pressAction() {
+  if (!action) return false;
+  sendPhone({ type: 'press', kind: action.kind });
+  if (action.kind !== 'next') showAction(null);
+  return true;
+}
+function togglePlay() {
+  const st = player.getPlayerState();
+  if (st === cast.framework.messages.PlayerState.PLAYING || st === cast.framework.messages.PlayerState.BUFFERING) player.pause();
+  else player.play();
+}
+document.addEventListener('keydown', (e) => {
+  const k = e.key;
+  if (k === 'Enter' || k === 'Select' || k === 'OK') { if (!pressAction()) togglePlay(); }
+  else if (k === 'MediaPlayPause' || k === ' ' || k === 'Unidentified' && e.keyCode === 179) togglePlay();
+  else if (k === 'MediaPlay') player.play();
+  else if (k === 'MediaPause') player.pause();
+  else if (k === 'MediaTrackNext' && action) pressAction();
+  else if ((k === 'Escape' || k === 'Back' || k === 'GoBack' || k === 'BrowserBack') && action) { sendPhone({ type: 'dismiss', kind: action.kind }); showAction(null); }
+  else if (k === 'ArrowLeft') player.seek(Math.max(0, player.getCurrentTimeSec() - 10));
+  else if (k === 'ArrowRight') player.seek(player.getCurrentTimeSec() + 30);
+  else return;
+  hud(true, 3000);
+  e.preventDefault();
+}, true);
+
 context.addCustomMessageListener(NS, (event) => {
   const d = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-  if (d.type === 'sub') setSub(d.sub);
+  if (d.type === 'action') showAction(d.action || null);
+  else if (d.type === 'sub') setSub(d.sub);
   else if (d.type === 'offset') { sub.offset = d.ms || 0; }
   else if (d.type === 'style') { style = d.style || style; applyStyle(); }
 });
@@ -161,6 +199,7 @@ player.setMessageInterceptor(cast.framework.messages.MessageType.LOAD, (req) => 
   if (beam && beam.style) { style = beam.style; applyStyle(); }
   setSub(beam ? beam.sub || null : null);
   setMeta(req.media, beam);
+  showAction(null);
   showIdle('Loading ' + ((req.media.metadata && req.media.metadata.title) || 'video') + '…');
   return req;
 });
@@ -177,7 +216,7 @@ player.addEventListener(E.BUFFERING, (e) => {
   setState();
   if (e.isBuffering) hud(true, 0); else hud(true, 2000);
 });
-player.addEventListener(E.MEDIA_FINISHED, () => { setSub(null); body.classList.remove('buffering'); showIdle('Finished. Pick another video on your phone.'); });
+player.addEventListener(E.MEDIA_FINISHED, () => { setSub(null); showAction(null); body.classList.remove('buffering'); showIdle('Finished. Pick another video on your phone.'); });
 player.addEventListener(E.ERROR, (e) => {
   const code = e.detailedErrorCode;
   const map = {
