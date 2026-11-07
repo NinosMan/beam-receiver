@@ -1,0 +1,59 @@
+:root {
+  --coral: #FF6B4A;
+  --amber: #FFB547;
+  --bg: #0E0F13;
+}
+html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden;
+  font-family: "Google Sans", Roboto, "Helvetica Neue", Arial, sans-serif; }
+
+cast-media-player {
+  --theme-hue: 12;
+  --progress-color: var(--coral);
+  --background-color: var(--bg);
+  --font-family: "Google Sans", Roboto, Arial, sans-serif;
+  --splash-image: none;
+  --watermark-image: none;
+  position: absolute; inset: 0;
+}
+
+/* Subtitle overlay (driven by receiver.js so timing + style can change live). */
+#subs {
+  position: absolute; left: 6%; right: 6%; bottom: 8%;
+  z-index: 10; text-align: center; pointer-events: none;
+  color: #fff; font-size: 4.4vh; line-height: 1.28; font-weight: 600;
+  text-shadow: 0 0 6px #000, 0 2px 3px #000;
+  white-space: pre-line;
+}
+#subs span.line {
+  display: inline; padding: .05em .35em; border-radius: .2em;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+
+/* Idle / splash screen. */
+#idle {
+  position: absolute; inset: 0; z-index: 20;
+  background: radial-gradient(120% 90% at 85% 110%, rgba(255,107,74,.28), transparent 55%),
+              radial-gradient(90% 70% at 0% 0%, rgba(255,181,71,.14), transparent 60%), var(--bg);
+  display: flex; flex-direction: column; justify-content: center; padding-left: 9vw;
+  transition: opacity .6s ease;
+}
+#idle.hidden { opacity: 0; pointer-events: none; }
+#idle .glow { position: absolute; width: 50vh; height: 50vh; right: 10vw; top: 18vh; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,107,74,.35), transparent 70%); filter: blur(30px);
+  animation: breathe 6s ease-in-out infinite; }
+@keyframes breathe { 0%,100% { transform: scale(1); opacity: .7 } 50% { transform: scale(1.15); opacity: 1 } }
+#idle .brand { display: flex; align-items: center; gap: 2.2vh; }
+#idle .logo { width: 9vh; height: 9vh; border-radius: 50%; display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--coral), var(--amber)); box-shadow: 0 1.5vh 5vh rgba(255,107,74,.35); }
+#idle .logo svg { width: 5vh; height: 5vh; }
+#idle .name { color: #F2F3F5; font-size: 7vh; font-weight: 800; letter-spacing: -.02em; }
+#idle .clock { color: #F2F3F5; font-size: 16vh; font-weight: 200; margin-top: 6vh; letter-spacing: -.03em; }
+#idle .hint { color: #9AA0AD; font-size: 3.2vh; margin-top: 1vh; }
+
+#toast {
+  position: absolute; z-index: 30; left: 50%; top: 6vh; transform: translate(-50%, -20px);
+  background: rgba(22,24,30,.92); color: #F2F3F5; border: 1px solid rgba(255,92,108,.5);
+  padding: 1.6vh 3vh; border-radius: 2vh; font-size: 2.6vh; max-width: 70vw;
+  opacity: 0; transition: all .35s ease;
+}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
