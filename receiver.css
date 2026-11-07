@@ -85,6 +85,6 @@ body.buffering #spinner { opacity: 1; }
   padding: 1.6vh 3vh; border-radius: 1vh; font-size: 2.6vh; font-weight: 600; color: #000; background: rgba(255,255,255,.92);
   box-shadow: 0 0 0 .4vh rgba(255,255,255,.35); opacity: 0; transform: translateX(3vh); transition: opacity .35s, transform .35s; pointer-events: none; }
 #action.show { opacity: 1; transform: none; }
-#action .icon { font-size: 2.4vh; }
+#action .icon { width: 2.6vh; height: 2.6vh; }
 #action #actionCount { opacity: .55; font-variant-numeric: tabular-nums; }
 body.hud-on #action { bottom: 30vh; }

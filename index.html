@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Beam Receiver</title>
   <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
-  <link rel="stylesheet" href="receiver.css?v=3">
+  <link rel="stylesheet" href="receiver.css?v=4">
 </head>
 <body>
   <video id="video"></video>
@@ -52,10 +52,10 @@
   </div>
 
   <!-- Remote-controllable action (Skip Intro / Next episode). Focused by default: OK presses it. -->
-  <div id="action"><span class="icon">&#9197;</span><span id="actionLabel"></span><span id="actionCount"></span></div>
+  <div id="action"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l8.5 6L6 18zM16 6h2v12h-2z" fill="#000"/></svg><span id="actionLabel"></span><span id="actionCount"></span></div>
 
   <div id="toast"></div>
 
-  <script src="receiver.js?v=3"></script>
+  <script src="receiver.js?v=4"></script>
 </body>
 </html>
